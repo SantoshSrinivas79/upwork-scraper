@@ -1,0 +1,20 @@
+{
+	"name": "upwork-scraper",
+	"version": "0.0.1",
+	"description": "Apify actor for scraping upwork.com",
+	"dependencies": {
+		"apify": "^0.20.0"
+	},
+	"devDependencies": {
+		"@apify/eslint-config": "0.0.3",
+		"eslint": "^7.0.0"
+	},
+	"scripts": {
+		"start": "node src/main.js",
+		"lint": "./node_modules/.bin/eslint ./src --ext .js,.jsx",
+		"lint:fix": "./node_modules/.bin/eslint ./src --ext .js,.jsx --fix",
+		"test": "echo \"Error: oops, the actor has no tests yet, sad!\" && exit 1"
+	},
+	"author": "Gustavo T. Rudiger",
+	"license": "ISC"
+}
