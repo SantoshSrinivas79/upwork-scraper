@@ -24,6 +24,20 @@
             "type": "string",
             "description": "Here you can write your custom javascript code to extract custom data from the page.",
             "editor": "javascript"
+        },
+        "proxy": {
+            "title": "Proxy configuration",
+            "type": "object",
+            "description": "<strong>Proxy is required to run this actor!</strong> Either use Apify proxy, or provide your own proxy servers.",
+            "prefill": {
+                "useApifyProxy": true,
+                "apifyProxyGroups": [ "SHADER" ]
+            },
+            "default": {
+                "useApifyProxy": true,
+                "apifyProxyGroups": [ "SHADER" ]
+            },
+            "editor": "proxy"
         }
     },
     "required": [

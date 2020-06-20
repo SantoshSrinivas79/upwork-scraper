@@ -3,7 +3,9 @@
 	"version": "0.0.1",
 	"description": "Apify actor for scraping upwork.com",
 	"dependencies": {
-		"apify": "^0.20.0"
+		"apify": "^0.20.0",
+		"cheerio": "^1.0.0-rc.3",
+		"safe-eval": "^0.4.1"
 	},
 	"devDependencies": {
 		"@apify/eslint-config": "0.0.3",
