@@ -4,7 +4,9 @@ const { EnumURLTypes } = require('./constants');
 const { log } = Apify.utils;
 log.setLevel(log.LEVELS.DEBUG);
 
-const getUrlType = (url = '') => {
+exports.log = log;
+
+exports.getUrlType = (url = '') => {
     let type = null;
 
     if (url.match(/upwork\.com\/*$/)) {
@@ -20,9 +22,4 @@ const getUrlType = (url = '') => {
     }
 
     return type;
-};
-
-module.exports = {
-    getUrlType,
-    log,
 };

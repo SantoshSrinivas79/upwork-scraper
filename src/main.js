@@ -5,7 +5,6 @@ const { log, getUrlType } = require('./tools');
 const { EnumURLTypes, EnumBaseUrl } = require('./constants');
 const { profileParser } = require('./parsers');
 
-
 Apify.main(async () => {
     const input = await Apify.getInput();
 
@@ -77,7 +76,6 @@ Apify.main(async () => {
                 log.debug('Category url...');
 
                 const profiles = $('#profiles-container .v5-tile');
-                profiles.splice(1); // TODO: remove
 
                 await Array.from(profiles).reduce(async (previous, profile) => {
                     await previous;
