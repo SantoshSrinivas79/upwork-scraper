@@ -1,7 +1,7 @@
 const { log, goToNextPage, splitUrl } = require('../tools');
 const { EnumBaseUrl } = require('../constants');
 
-exports.profileSearchParser = async ({ requestQueue, request, page }) => {
+exports.profileSearchParser = async ({ requestQueue, request, page, session }) => {
     log.debug('Profile search url...');
 
     const profiles = await page.$$eval('div[data-freelancer=profile]', ($profiles) => {

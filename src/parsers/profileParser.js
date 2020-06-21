@@ -1,8 +1,15 @@
-
-
 const Apify = require('apify');
+const { log } = require('../tools');
 
-exports.profileParser = async ({ requestQueue, page, request }) => {
+exports.profileParser = async ({ requestQueue, page, request, session }) => {
+    log.debug('Profile url...');
+
+    const title = await page.title();
+
+    if (title.includes('denied')) {
+        session.retire();
+    }
+
     await page.waitForFunction('window.PROFILE_RESPONSE !== null');
     const profileResponse = await page.evaluate(() => window.PROFILE_RESPONSE);
     const { profile, stats } = profileResponse.details.profile;
@@ -18,8 +25,6 @@ exports.profileParser = async ({ requestQueue, page, request }) => {
         hoursWorked: stats.totalHours,
         profileUrl: request.url,
     };
-
-    console.log(freelancer);
 
     await Apify.pushData(freelancer);
 };
