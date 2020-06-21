@@ -8,12 +8,7 @@ exports.log = log;
 
 exports.splitUrl = (url) => url.split('?')[0];
 
-exports.goToNextPage = async ({ requestQueue, page, request, itemCount, maxItems }) => {
-    log.debug('Max items before go to next page:', maxItems, itemCount);
-    if (itemCount >= maxItems) {
-        return;
-    }
-
+exports.goToNextPage = async ({ requestQueue, page, request }) => {
     const doesNotHaveNextPage = await page.$eval('.pagination-next', (pagination) => {
         return Array.from(pagination.classList).includes('disabled');
     });

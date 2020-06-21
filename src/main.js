@@ -56,6 +56,7 @@ Apify.main(async () => {
                 log.info('Crawler Finished.');
                 process.exit();
             }
+
             const { page, request, session } = context;
             log.info(`Processing ${request.url}...`);
 
@@ -77,7 +78,7 @@ Apify.main(async () => {
                     return;
                 case EnumURLTypes.PROFILE_SEARCH:
                     await profileSearchParser({ requestQueue, ...context });
-                    return goToNextPage({ requestQueue, ...context, itemCount, maxItems });
+                    return goToNextPage({ requestQueue, ...context });
                 case EnumURLTypes.PROFILE:
                     return profileParser({ requestQueue, ...context });
                 default:
