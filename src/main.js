@@ -64,7 +64,6 @@ Apify.main(async () => {
 
             if (title.includes('denied')) {
                 session.retire();
-                await page.waitFor(30000);
                 throw new Error('Page blocked');
             }
 
