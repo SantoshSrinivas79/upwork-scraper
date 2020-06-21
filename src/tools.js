@@ -6,7 +6,7 @@ log.setLevel(log.LEVELS.DEBUG);
 
 exports.log = log;
 
-exports.splitUrl = url => url.split('?')[0];
+exports.splitUrl = (url) => url.split('?')[0];
 
 exports.goToNextPage = async ({ requestQueue, $, request, session }) => {
     const { maxItems } = await Apify.getInput();
