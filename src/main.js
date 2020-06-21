@@ -2,8 +2,8 @@ const Apify = require('apify');
 const safeEval = require('safe-eval');
 const cheerio = require('cheerio');
 const { log, getUrlType } = require('./tools');
-const { EnumURLTypes, EnumBaseUrl } = require('./constants');
-const { profileParser } = require('./parsers');
+const { EnumURLTypes } = require('./constants');
+const { profileParser, categoryParser, profileSearchParser } = require('./parsers');
 
 Apify.main(async () => {
     const input = await Apify.getInput();
@@ -73,17 +73,15 @@ Apify.main(async () => {
             log.debug('Url type:', type);
 
             if (type === EnumURLTypes.CATEGORY) {
-                log.debug('Category url...');
+                await categoryParser({ requestQueue, $, request, session });
+            }
 
-                const profiles = $('#profiles-container .v5-tile');
+            if (type === EnumURLTypes.JOB_SEARCH) {
+                console.log('job search page');
+            }
 
-                await Array.from(profiles).reduce(async (previous, profile) => {
-                    await previous;
-                    const nameLink = $(profile).find('.name-link');
-                    const profileUrl = EnumBaseUrl.MAIN_URL + $(nameLink).find('a[data-qa=name]').attr('href');
-
-                    await requestQueue.addRequest({ url: profileUrl });
-                }, Promise.resolve());
+            if (type === EnumURLTypes.PROFILE_SEARCH) {
+                await profileSearchParser({ requestQueue, $, request, session });
             }
 
             if (type === EnumURLTypes.PROFILE) {

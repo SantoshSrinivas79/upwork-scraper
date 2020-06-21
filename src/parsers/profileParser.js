@@ -1,7 +1,7 @@
 const safeEval = require('safe-eval');
 const Apify = require('apify');
 
-exports.profileParser = async ({ requestQueue, $, request }) => {
+exports.profileParser = async ({ requestQueue, $, request, session }) => {
     const scriptTags = $('script');
 
     const script = Array.from(scriptTags).reduce((found, el) => {

@@ -1,3 +1,9 @@
+const { categoryParser } = require('./categoryParser');
 const { profileParser } = require('./profileParser');
+const { profileSearchParser } = require('./profileSearchParser');
 
-exports.profileParser = profileParser;
+module.exports = {
+    categoryParser,
+    profileParser,
+    profileSearchParser,
+};

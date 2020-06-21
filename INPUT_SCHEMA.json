@@ -10,14 +10,15 @@
             "description": "If you already have URL(s) of page(s) you wish to scrape, you can set them here.",
             "editor": "stringList",
             "placeholderValue": "URL",
-            "patternValue": "https:\\/\\/www\\.upwork\\.com\\/*.*",
+            "patternValue": "https:\\/\\/www\\.upwork\\.com\\/(search|hire)\\/\\.*",
             "uniqueItems": true
         },  
         "maxItems": {
             "title": "Search results limit",
             "type": "integer",
             "description": "How many search results should be processed",
-            "editor": "number"
+            "editor": "number",
+            "prefill": 500
         },
         "extendOutputFunction": {
             "title": "Extended Output Function",

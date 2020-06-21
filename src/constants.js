@@ -1,7 +1,9 @@
 exports.EnumURLTypes = {
-    CATEGORY: 'category',
-    START_URL: 'startUrl',
+    CATEGORY: 'hire',
+    JOB_SEARCH: 'job_search',
+    PROFILE_SEARCH: 'profiles_search',
     PROFILE: 'profile',
+    START_URL: 'startUrl',
 };
 
 exports.EnumBaseUrl = {
