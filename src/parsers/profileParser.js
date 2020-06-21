@@ -1,17 +1,10 @@
-const safeEval = require('safe-eval');
+
+
 const Apify = require('apify');
 
-exports.profileParser = async ({ requestQueue, $, request, session }) => {
-    const scriptTags = $('script');
-
-    const script = Array.from(scriptTags).reduce((found, el) => {
-        const candidate = el.children.find(({ data }) => data.startsWith('window.PROFILE_RESPONSE='));
-        if (candidate) {
-            [, found] = candidate.data.split('window.PROFILE_RESPONSE=');
-        }
-        return found;
-    });
-    const profileResponse = safeEval(script);
+exports.profileParser = async ({ requestQueue, page, request }) => {
+    await page.waitForFunction('window.PROFILE_RESPONSE !== null');
+    const profileResponse = await page.evaluate(() => window.PROFILE_RESPONSE);
     const { profile, stats } = profileResponse.details.profile;
     const freelancer = {
         name: profile.name,
@@ -25,6 +18,8 @@ exports.profileParser = async ({ requestQueue, $, request, session }) => {
         hoursWorked: stats.totalHours,
         profileUrl: request.url,
     };
+
+    console.log(freelancer);
 
     await Apify.pushData(freelancer);
 };

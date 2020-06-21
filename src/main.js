@@ -1,6 +1,5 @@
 const Apify = require('apify');
 const safeEval = require('safe-eval');
-const cheerio = require('cheerio');
 const { log, getUrlType } = require('./tools');
 const { EnumURLTypes } = require('./constants');
 const { profileParser, categoryParser, profileSearchParser } = require('./parsers');
@@ -43,56 +42,41 @@ Apify.main(async () => {
         }
     }
 
-
-    const crawler = new Apify.BasicCrawler({
+    const crawler = new Apify.PuppeteerCrawler({
         requestQueue,
         useSessionPool: true,
-
-        handleRequestFunction: async ({ request, session }) => {
+        persistCookiesPerSession: true,
+        launchPuppeteerOptions: {
+            ...proxy,
+            stealth: true,
+        },
+        handlePageFunction: async (context) => {
             if (itemCount >= maxItems) {
                 log.info('Actor reached the max items limit. Crawler is going to halt...');
                 log.info('Crawler Finished.');
                 process.exit();
             }
-
-
+            const { request } = context;
             log.info(`Processing ${request.url}...`);
-
-            const requestOptions = {
-                url: request.url,
-                proxyUrl: Apify.getApifyProxyUrl({
-                    groups: proxy.apifyProxyGroups,
-                    session: session.id,
-                }),
-            };
-            const { body } = await Apify.utils.requestAsBrowser(requestOptions);
-            const $ = cheerio.load(body);
-
             const type = getUrlType(request.url);
 
-            log.debug('Url type:', type);
-
-            if (type === EnumURLTypes.CATEGORY) {
-                await categoryParser({ requestQueue, $, request, session });
+            switch (type) {
+                case EnumURLTypes.CATEGORY:
+                    return categoryParser({ requestQueue, ...context });
+                case EnumURLTypes.JOB_SEARCH:
+                    console.log('job search page');
+                    return;
+                case EnumURLTypes.PROFILE_SEARCH:
+                    return profileSearchParser({ requestQueue, ...context });
+                case EnumURLTypes.PROFILE:
+                    return profileParser({ requestQueue, ...context });
+                default:
+                    log.warning('Url does not match any parser');
             }
-
-            if (type === EnumURLTypes.JOB_SEARCH) {
-                console.log('job search page');
-            }
-
-            if (type === EnumURLTypes.PROFILE_SEARCH) {
-                await profileSearchParser({ requestQueue, $, request, session });
-            }
-
-            if (type === EnumURLTypes.PROFILE) {
-                await profileParser({ requestQueue, $, request, session });
-            }
-        },
-
-        handleFailedRequestFunction: async ({ request }) => {
-            log.warning(`Request ${request.url} failed too many times`);
         },
     });
 
+    log.info('Starting the crawl.');
     await crawler.run();
+    log.info('Crawl finished.');
 });

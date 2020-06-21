@@ -1,20 +1,25 @@
-const { log, goToNextPage } = require('../tools');
+const { log, goToNextPage, splitUrl } = require('../tools');
 const { EnumBaseUrl } = require('../constants');
 
-exports.profileSearchParser = async ({ requestQueue, $, request, session }) => {
+exports.profileSearchParser = async ({ requestQueue, request, page }) => {
     log.debug('Profile search url...');
 
-    const profiles = $('div[data-freelancer=profile]');
+    const profiles = await page.$$eval('div[data-freelancer=profile]', ($profiles) => {
+        const data = [];
+        $profiles.forEach(($profile) => {
+            const profileUrl = $profile.querySelector('a[data-qa=tile_name]').href;
+            data.push(profileUrl);
+        });
 
-    await Array.from(profiles).reduce(async (previous, profile) => {
+        return data;
+    });
+
+    await profiles.reduce(async (previous, profileUrl) => {
         await previous;
-        console.log(profile.type, profile.name, profile.children);
-        const tileName = $(profile).find('a[data-qa=tile_name]');
-        const profileUrl = EnumBaseUrl.MAIN_URL + $(tileName).attr('href');
-        console.log(profileUrl);
-
-        await requestQueue.addRequest({ url: profileUrl });
+        const url = splitUrl(profileUrl);
+        await requestQueue.addRequest({ url });
     }, Promise.resolve());
 
+    // TODO: Fix
     // await goToNextPage({ $, requestQueue, session, request });
 };
