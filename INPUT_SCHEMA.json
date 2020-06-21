@@ -10,7 +10,7 @@
             "description": "If you already have URL(s) of page(s) you wish to scrape, you can set them here.",
             "editor": "stringList",
             "placeholderValue": "URL",
-            "patternValue": "https:\\/\\/www\\.upwork\\.com\\/(search|hire)\\/\\.*",
+            "patternValue": "https:\\/\\/www\\.upwork\\.com\\/(search|hire|o\/profiles\/users)\\/\\.*",
             "uniqueItems": true
         },  
         "maxItems": {
