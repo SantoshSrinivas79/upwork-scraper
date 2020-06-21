@@ -18,8 +18,6 @@ exports.goToNextPage = async ({ requestQueue, page, request, itemCount, maxItems
         return Array.from(pagination.classList).includes('disabled');
     });
 
-    console.log('Has next:', !doesNotHaveNextPage);
-
     if (doesNotHaveNextPage) {
         return;
     }

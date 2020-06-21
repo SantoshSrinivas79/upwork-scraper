@@ -50,8 +50,7 @@ Apify.main(async () => {
         handlePageFunction: async (context) => {
             const dataset = await Apify.openDataset();
             const { itemCount } = await dataset.getInfo();
-            console.log({ itemCount, maxItems });
-            
+
             if (itemCount >= maxItems) {
                 log.info('Actor reached the max items limit. Crawler is going to halt...');
                 log.info('Crawler Finished.');
