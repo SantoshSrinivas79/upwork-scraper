@@ -1,9 +1,10 @@
 const { log, goToNextPage, splitUrl } = require('../tools');
 const { EnumBaseUrl } = require('../constants');
 
-exports.profileSearchParser = async ({ requestQueue, request, page, session }) => {
+exports.profileSearchParser = async ({ requestQueue, page, request }) => {
     log.debug('Profile search url...');
 
+    await page.waitForSelector('div[data-freelancer=profile]');
     const profiles = await page.$$eval('div[data-freelancer=profile]', ($profiles) => {
         const data = [];
         $profiles.forEach(($profile) => {
@@ -20,6 +21,5 @@ exports.profileSearchParser = async ({ requestQueue, request, page, session }) =
         await requestQueue.addRequest({ url });
     }, Promise.resolve());
 
-    // TODO: Fix
-    // await goToNextPage({ $, requestQueue, session, request });
+    await goToNextPage({ requestQueue, page, request });
 };

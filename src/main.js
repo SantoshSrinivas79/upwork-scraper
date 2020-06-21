@@ -56,8 +56,17 @@ Apify.main(async () => {
                 log.info('Crawler Finished.');
                 process.exit();
             }
-            const { request } = context;
+            const { page, request, session } = context;
             log.info(`Processing ${request.url}...`);
+
+            const title = await page.title();
+
+            if (title.includes('denied')) {
+                session.retire();
+                await page.waitFor(30000);
+                throw new Error('Page blocked');
+            }
+
             const type = getUrlType(request.url);
 
             switch (type) {

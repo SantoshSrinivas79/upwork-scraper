@@ -1,16 +1,25 @@
-const { log } = require('../tools');
+const { log, splitUrl } = require('../tools');
 const { EnumBaseUrl } = require('../constants');
 
-exports.categoryParser = async ({ requestQueue, $, request, session }) => {
+exports.categoryParser = async ({ requestQueue, page }) => {
     log.debug('Category url...');
 
-    const profiles = $('#profiles-container .v5-tile');
+    const profiles = await page.$$eval('#profiles-container .v5-tile', ($profiles) => {
+        const data = [];
+        $profiles.forEach(($profile) => {
+            const profileUrl = $profile.querySelector('a[data-qa=tile_name]').href;
+            data.push(profileUrl);
+        });
 
-    await Array.from(profiles).reduce(async (previous, profile) => {
+        return data;
+    });
+
+    await profiles.reduce(async (previous, profileUrl) => {
         await previous;
-        const nameLink = $(profile).find('.name-link');
-        const profileUrl = EnumBaseUrl.MAIN_URL + $(nameLink).find('a[data-qa=name]').attr('href');
-
-        await requestQueue.addRequest({ url: profileUrl });
+        const url = splitUrl(profileUrl);
+        await requestQueue.addRequest({ url });
     }, Promise.resolve());
+
+    // TODO: Fix
+    // await goToNextPage({ $, requestQueue, session, request });
 };

@@ -8,7 +8,7 @@ exports.log = log;
 
 exports.splitUrl = (url) => url.split('?')[0];
 
-exports.goToNextPage = async ({ requestQueue, $, request, session }) => {
+exports.goToNextPage = async ({ requestQueue, page, request }) => {
     const { maxItems } = await Apify.getInput();
     const dataset = await Apify.openDataset();
     const { itemCount } = await dataset.getInfo();
@@ -18,15 +18,22 @@ exports.goToNextPage = async ({ requestQueue, $, request, session }) => {
         return;
     }
 
-    const doesNotHaveNextPage = $('.pagination-next').hasClass('disabled');
+    const doesNotHaveNextPage = await page.$eval('.pagination-next', (pagination) => {
+        return pagination.attributes.class.includes('disabled');
+    });
+
+    console.log('Has next:', !doesNotHaveNextPage);
+
+    await page.waitFor(1000000);
+
     if (doesNotHaveNextPage) {
         return;
     }
 
     const searchParams = new URLSearchParams(request.url);
-    const page = Number(searchParams.get('page')) || 1;
+    const pageNumber = Number(searchParams.get('page')) || 1;
 
-    searchParams.set('page', page + 1);
+    searchParams.set('page', pageNumber + 1);
 
     await requestQueue.addRequest({ url: unescape(searchParams.toString()) });
 };
