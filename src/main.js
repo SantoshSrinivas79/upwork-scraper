@@ -1,6 +1,6 @@
 const Apify = require('apify');
 const safeEval = require('safe-eval');
-const { log, getUrlType } = require('./tools');
+const { log, getUrlType, goToNextPage } = require('./tools');
 const { EnumURLTypes } = require('./constants');
 const { profileParser, categoryParser, profileSearchParser } = require('./parsers');
 
@@ -27,9 +27,6 @@ Apify.main(async () => {
         // await requestQueue.addRequest({ url: getSearchUrl(search), userData: { type: EnumURLTypes.SEARCH } });
     }
 
-    const dataset = await Apify.openDataset();
-    const { itemCount } = await dataset.getInfo();
-
     let extendOutputFunctionObj;
     if (typeof extendOutputFunction === 'string' && extendOutputFunction.trim() !== '') {
         try {
@@ -51,6 +48,10 @@ Apify.main(async () => {
             stealth: true,
         },
         handlePageFunction: async (context) => {
+            const dataset = await Apify.openDataset();
+            const { itemCount } = await dataset.getInfo();
+            console.log({ itemCount, maxItems });
+            
             if (itemCount >= maxItems) {
                 log.info('Actor reached the max items limit. Crawler is going to halt...');
                 log.info('Crawler Finished.');
@@ -76,7 +77,8 @@ Apify.main(async () => {
                     console.log('job search page');
                     return;
                 case EnumURLTypes.PROFILE_SEARCH:
-                    return profileSearchParser({ requestQueue, ...context });
+                    await profileSearchParser({ requestQueue, ...context });
+                    return goToNextPage({ requestQueue, ...context, itemCount, maxItems });
                 case EnumURLTypes.PROFILE:
                     return profileParser({ requestQueue, ...context });
                 default:

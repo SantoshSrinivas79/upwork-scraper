@@ -1,5 +1,4 @@
 const { log, splitUrl } = require('../tools');
-const { EnumBaseUrl } = require('../constants');
 
 exports.categoryParser = async ({ requestQueue, page }) => {
     log.debug('Category url...');
@@ -19,7 +18,4 @@ exports.categoryParser = async ({ requestQueue, page }) => {
         const url = splitUrl(profileUrl);
         await requestQueue.addRequest({ url });
     }, Promise.resolve());
-
-    // TODO: Fix
-    // await goToNextPage({ $, requestQueue, session, request });
 };

@@ -4,7 +4,7 @@ const { log } = require('../tools');
 exports.profileParser = async ({ page, request }) => {
     log.debug('Profile url...');
 
-    await page.waitForFunction(() => window.PROFILE_RESPONSE !== null);
+    await page.waitForFunction('window.PROFILE_RESPONSE !== null');
     const profileResponse = await page.evaluate(() => window.PROFILE_RESPONSE);
     const { profile, stats } = profileResponse.details.profile;
     const freelancer = {

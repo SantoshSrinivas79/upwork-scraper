@@ -1,7 +1,6 @@
-const { log, goToNextPage, splitUrl } = require('../tools');
-const { EnumBaseUrl } = require('../constants');
+const { log, splitUrl } = require('../tools');
 
-exports.profileSearchParser = async ({ requestQueue, page, request }) => {
+exports.profileSearchParser = async ({ requestQueue, page }) => {
     log.debug('Profile search url...');
 
     await page.waitForSelector('div[data-freelancer=profile]');
@@ -20,6 +19,4 @@ exports.profileSearchParser = async ({ requestQueue, page, request }) => {
         const url = splitUrl(profileUrl);
         await requestQueue.addRequest({ url });
     }, Promise.resolve());
-
-    await goToNextPage({ requestQueue, page, request });
 };
