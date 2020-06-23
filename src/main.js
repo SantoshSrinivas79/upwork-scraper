@@ -1,30 +1,23 @@
 const Apify = require('apify');
 const safeEval = require('safe-eval');
-const { log, getUrlType, goToNextPage } = require('./tools');
+const { log, getUrlType, goToNextPage, getSearchUrl } = require('./tools');
 const { EnumURLTypes } = require('./constants');
 const { profileParser, categoryParser, profileSearchParser } = require('./parsers');
 
 Apify.main(async () => {
     const input = await Apify.getInput();
 
-    const { proxy, startUrls, maxItems, search, extendOutputFunction } = input;
+    const { proxy, startUrls, maxItems, search, extendOutputFunction, category, hourlyRate, englishLevel, useBuiltInSearch } = input;
 
-    if (!startUrls && !search) {
-        throw new Error('startUrls or search parameter must be provided!');
+    if (!startUrls && !useBuiltInSearch) {
+        throw new Error('startUrls or built-in search must be used!');
     }
 
+    const requestList = await Apify.openRequestList('start-urls', useBuiltInSearch ? [] : startUrls.map((url) => ({ url })));
     const requestQueue = await Apify.openRequestQueue();
 
-    if (startUrls && startUrls.length) {
-        await Promise.all(startUrls.map((url) => {
-            return requestQueue.addRequest({
-                url,
-            });
-        }));
-    }
-
-    if (search) {
-        // await requestQueue.addRequest({ url: getSearchUrl(search), userData: { type: EnumURLTypes.SEARCH } });
+    if (useBuiltInSearch) {
+        await requestQueue.addRequest({ url: getSearchUrl({ search, category, hourlyRate, englishLevel }) });
     }
 
     let extendOutputFunctionObj;
@@ -40,6 +33,7 @@ Apify.main(async () => {
     }
 
     const crawler = new Apify.PuppeteerCrawler({
+        requestList,
         requestQueue,
         useSessionPool: true,
         persistCookiesPerSession: true,

@@ -1,5 +1,5 @@
 const Apify = require('apify');
-const { EnumURLTypes } = require('./constants');
+const { EnumURLTypes, EnumBaseUrl } = require('./constants');
 
 const { log } = Apify.utils;
 log.setLevel(log.LEVELS.DEBUG);
@@ -49,4 +49,28 @@ exports.getUrlType = (url = '') => {
     }
 
     return type;
+};
+
+exports.getSearchUrl = ({ search, category, hourlyRate, englishLevel }) => {
+    const url = new URL(EnumBaseUrl.PROFILE_SEARCH_URL);
+
+    if (search) {
+        url.searchParams.append('q', search);
+    }
+
+    if (hourlyRate) {
+        url.searchParams.append('rate', hourlyRate);
+    }
+
+    if (category) {
+        url.searchParams.append('category_uid', category);
+    }
+
+    if (englishLevel) {
+        url.searchParams.append('english', englishLevel);
+    }
+
+    console.log(url.href);
+
+    return url.href;
 };
