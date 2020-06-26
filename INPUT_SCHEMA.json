@@ -1,6 +1,6 @@
 {
     "title": "Input schema for Upwork scraper",
-    "description": "Some description",
+    "description": "Scrape information about freelancers and agencies from upwork.com without login.",
     "type": "object",
     "schemaVersion": 1,
     "properties": {
@@ -102,8 +102,8 @@
         "type": "integer",
         "description": "How many search results should be processed",
         "editor": "number",
-        "prefill": 500,
-        "default": 500,
+        "prefill": 100,
+        "default": 100,
         "sectionCaption": "Configuration",
         "sectionDescription": "This fields will help you configure the scraped data"
       },
@@ -111,7 +111,8 @@
         "title": "Extended Output Function",
         "type": "string",
         "description": "Here you can write your custom javascript code to extract custom data from the page.",
-        "editor": "javascript"
+        "editor": "javascript",
+        "prefill": "async () => {\n  return { timestamp: Date.now() }\n\n}"
       },
       "proxy": {
         "title": "Proxy configuration",
@@ -124,10 +125,7 @@
           ]
         },
         "default": {
-          "useApifyProxy": true,
-          "apifyProxyGroups": [
-            "SHADER"
-          ]
+          "useApifyProxy": true
         },
         "editor": "proxy"
       }

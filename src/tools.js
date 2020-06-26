@@ -70,7 +70,33 @@ exports.getSearchUrl = ({ search, category, hourlyRate, englishLevel }) => {
         url.searchParams.append('english', englishLevel);
     }
 
-    console.log(url.href);
-
     return url.href;
 };
+
+exports.gotoFunction = async ({ page, request }) => {
+    await page.setRequestInterception(true);
+
+    page.on('request', (req) => {
+        const url = req.url();
+        const resourceType = req.resourceType();
+        const ignoredTypes = [
+            'image',
+            'font',
+        ];
+
+        const ignored = [
+        ];
+
+        let abort = ignoredTypes.includes(resourceType);
+        if (!abort) abort = ignored.some((item) => url.includes(item));
+
+        if (abort) {
+            req.abort();
+        } else {
+            req.continue();
+        }
+    });
+
+    return page.goto(request.url, { timeout: 60000 });
+};
+

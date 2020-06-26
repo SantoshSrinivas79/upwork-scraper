@@ -1,7 +1,7 @@
 const Apify = require('apify');
 const { log } = require('../tools');
 
-exports.profileParser = async ({ page, request }) => {
+exports.profileParser = async ({ page, request, extendOutputFunction }) => {
     log.debug('Profile url...');
 
     await page.waitForFunction('window.PROFILE_RESPONSE !== null');
@@ -19,6 +19,17 @@ exports.profileParser = async ({ page, request }) => {
         hoursWorked: stats.totalHours,
         profileUrl: request.url,
     };
+
+    let userResult = {};
+    if (extendOutputFunction) {
+        userResult = await page.evaluate((functionStr) => {
+            // eslint-disable-next-line no-eval
+            const f = eval(functionStr);
+            return f();
+        }, extendOutputFunction);
+    }
+
+    Object.assign(freelancer, userResult);
 
     await Apify.pushData(freelancer);
 };
