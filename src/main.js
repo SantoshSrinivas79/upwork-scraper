@@ -47,8 +47,9 @@ Apify.main(async () => {
             const title = await page.title();
 
             if (title.includes('denied')) {
+                await requestQueue.addRequest({ url: request.url }, { forefront: true });
                 session.retire();
-                throw new Error('Page blocked');
+                throw new Error(`Human verifition required on ${request.url}`);
             }
 
             const type = getUrlType(request.url);

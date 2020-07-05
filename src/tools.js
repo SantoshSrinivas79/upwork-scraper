@@ -44,7 +44,7 @@ exports.getUrlType = (url = '') => {
         type = EnumURLTypes.JOB_SEARCH;
     }
 
-    if (url.match(/upwork\.com\/o\/profiles\/users.+/)) {
+    if (url.match(/upwork\.com\/(o\/profiles\/users.+|fl\/.+)/)) {
         type = EnumURLTypes.PROFILE;
     }
 
@@ -99,4 +99,3 @@ exports.gotoFunction = async ({ page, request }) => {
 
     return page.goto(request.url, { timeout: 60000 });
 };
-
