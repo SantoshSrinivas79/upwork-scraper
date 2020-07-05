@@ -1,7 +1,7 @@
 const Apify = require('apify');
 const { log } = require('../tools');
 
-exports.profileParser = async ({ page, request, extendOutputFunction }) => {
+exports.profileParser = async ({ page, request, extendOutputFunction, itemCount, maxItems }) => {
     log.debug('Profile url...');
 
     await page.waitForFunction('window.PROFILE_RESPONSE && window.PROFILE_RESPONSE.details && window.PROFILE_RESPONSE.details.profile');
@@ -31,5 +31,7 @@ exports.profileParser = async ({ page, request, extendOutputFunction }) => {
 
     Object.assign(freelancer, userResult);
 
-    await Apify.pushData(freelancer);
+    if (itemCount < maxItems) {
+        await Apify.pushData(freelancer);
+    }
 };

@@ -14,9 +14,8 @@ exports.profileSearchParser = async ({ requestQueue, page }) => {
         return data;
     });
 
-    await profiles.reduce(async (previous, profileUrl) => {
-        await previous;
+    for (const profileUrl of profiles) {
         const url = splitUrl(profileUrl);
         await requestQueue.addRequest({ url });
-    }, Promise.resolve());
+    }
 };

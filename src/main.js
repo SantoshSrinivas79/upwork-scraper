@@ -19,6 +19,9 @@ Apify.main(async () => {
         await requestQueue.addRequest({ url: getSearchUrl({ search, category, hourlyRate, englishLevel }) });
     }
 
+    const dataset = await Apify.openDataset();
+    let { itemCount } = await dataset.getInfo();
+
     const crawler = new Apify.PuppeteerCrawler({
         requestList,
         requestQueue,
@@ -32,9 +35,6 @@ Apify.main(async () => {
         gotoFunction,
 
         handlePageFunction: async (context) => {
-            const dataset = await Apify.openDataset();
-            const { itemCount } = await dataset.getInfo();
-
             if (itemCount >= maxItems) {
                 log.info('Actor reached the max items limit. Crawler is going to halt...');
                 log.info('Crawler Finished.');
@@ -47,7 +47,6 @@ Apify.main(async () => {
             const title = await page.title();
 
             if (title.includes('denied')) {
-                await requestQueue.addRequest({ url: request.url }, { forefront: true });
                 session.retire();
                 throw new Error(`Human verifition required on ${request.url}`);
             }
@@ -61,7 +60,9 @@ Apify.main(async () => {
                     await profileSearchParser({ requestQueue, ...context });
                     return goToNextPage({ requestQueue, ...context });
                 case EnumURLTypes.PROFILE:
-                    return profileParser({ requestQueue, ...context, extendOutputFunction });
+                    await profileParser({ requestQueue, ...context, extendOutputFunction, itemCount, maxItems });
+                    itemCount++;
+                    return;
                 default:
                     log.warning('Url does not match any parser');
             }

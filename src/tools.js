@@ -96,6 +96,6 @@ exports.gotoFunction = async ({ page, request }) => {
             req.continue();
         }
     });
-
+    await Apify.utils.sleep(Math.random() * 1000 * 5);
     return page.goto(request.url, { timeout: 60000 });
 };
