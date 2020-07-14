@@ -21,10 +21,10 @@ Apify.main(async () => {
 
     const dataset = await Apify.openDataset();
     let { itemCount } = await dataset.getInfo();
-    
+
     let proxyConfiguration = null;
-    
-    if(proxy.useApifyProxy){
+
+    if (proxy.useApifyProxy) {
         proxyConfiguration = await Apify.createProxyConfiguration({
             groups: proxy.apifyProxyGroups,
         });
@@ -36,7 +36,7 @@ Apify.main(async () => {
         useSessionPool: true,
         persistCookiesPerSession: true,
         proxyConfiguration,
-        launchPuppeteerOptions: {         
+        launchPuppeteerOptions: {
             stealth: true,
         },
 
