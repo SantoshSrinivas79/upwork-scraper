@@ -23,6 +23,7 @@ exports.goToNextPage = async ({ requestQueue, page, request }) => {
     searchParams.set('page', pageNumber + 1);
 
     await requestQueue.addRequest({ url: unescape(searchParams.toString()) });
+    log.info('Pagination found, new page added to queue.');
 };
 
 exports.getUrlType = (url = '') => {

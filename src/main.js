@@ -64,7 +64,7 @@ Apify.main(async () => {
                     itemCount++;
                     return;
                 default:
-                    log.warning('Url does not match any parser');
+                    log.warning(`Url does not match any parser: ${request.url}`);
             }
         },
     });
