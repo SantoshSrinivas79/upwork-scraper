@@ -21,6 +21,14 @@ Upwork Scraper is an [Apify actor](https://apify.com/actors) for extracting data
 | extendOutputFunction | string | A Javascript function passed as plain text that can return custom information. More on [Extend output function](#extend-output-function). | |
 | proxy | object | Proxy configuration of the run. | `{"useApifyProxy": true }`|
 
+#### Suported startUrls
+
+- www.upwork.com/hire/*
+- www.upwork.com/search/profiles/*
+- www.upwork.com/search/o/profiles/users/*
+- www.upwork.com/search/fl/*
+
+
 ### Output
 
 Output is stored in a dataset. 
@@ -55,7 +63,8 @@ Output is stored in a dataset.
 ```
 
 ### Compute units consumption
-Processing ...
+
+Estimated ~0.06 CU per 100 requests
 
 ### Extend output function
 
